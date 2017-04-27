@@ -42,6 +42,7 @@ classdef CalvinNN < handle
         % Declarations for methods that are in separate files
         convertNetwork(obj, net);
         convertNetworkToFastRcnn(obj, varargin);
+        convertNetworkToPrtObjFastRcnn(obj, varargin);
         init(obj, varargin);
         plotStats(obj, epochs, stats, plotAccuracy);
         saveState(obj, fileName);

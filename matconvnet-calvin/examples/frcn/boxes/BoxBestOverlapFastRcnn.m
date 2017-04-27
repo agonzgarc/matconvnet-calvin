@@ -1,4 +1,4 @@
-function [scores, index] = BoxBestOverlap(targetBoxes, testBoxes)
+function [scores, index] = BoxBestOverlapFastRcnn(targetBoxes, testBoxes)
 % [scores, index] = BoxBestOverlap(targetBoxes, testBoxes)
 % 
 % Get overlap scores (Pascal-wise) for testBoxes bounding boxes
