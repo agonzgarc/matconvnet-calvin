@@ -1,4 +1,5 @@
 Copyright (c) 2015-2016, Holger Caesar and Jasper Uijlings.
+Abel Gonzalez-Garcia, 2016.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
