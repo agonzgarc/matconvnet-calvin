@@ -6,6 +6,8 @@ function convertNetworkToPrtObjFastRcnn(obj, varargin)
 % Updated by Jasper Uijlings:
 %  - Extra flexibility and possible bounding box regression
 %  - Added instanceWeights to loss layer
+% 
+% Modified by Abel Gonzalez-Garcia, 2016
 
 % Initial settings
 p = inputParser;

@@ -8,7 +8,8 @@ function[stats] = testPrtObj(obj)
 %
 % Copyright by Jasper Uijlings, 2015
 % Modified by Holger Caesar, 2016
-% Abel
+% 
+% Modified by Abel Gonzalez-Garcia, 2016
 
 % Check that we only use one GPU
 numGpus = numel(obj.nnOpts.gpus);

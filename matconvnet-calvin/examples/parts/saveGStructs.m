@@ -1,5 +1,10 @@
 function saveGStructs(imSet)
 
+% Saves GStructs needed for network training and testing
+%
+% One struct per image, it contains all necessary information for both
+% objects and parts
+
 global DATAopts;
 
 
@@ -12,12 +17,9 @@ allIms = imdb.image_ids;
 % Path where to store the Gstructs
 mkdir(DATAopts.gStructPath);
 
+% Offsets for each part, they depend on number of parts per object class
 offsetsPartIdx = [0; cumsum(cellfun(@(x) size(x,1), imdb.prt_classes))];
 offsetsPartIdx = offsetsPartIdx(1:end-1);
-
-
-saveDir = '/home/abel/LocalData/Graphics/GStructsObjPrt-FromScratch';
-mkdir(saveDir);
 
 
 for idxImg = 1:size(allIms,1)    

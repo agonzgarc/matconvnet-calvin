@@ -1,5 +1,8 @@
 function [imdb] = createIMDB(imSet)
 
+% Created by Davide Modolo, 2016
+
+
 global DATAopts;
 
 % List of images

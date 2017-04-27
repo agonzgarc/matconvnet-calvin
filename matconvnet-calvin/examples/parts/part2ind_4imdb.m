@@ -6,6 +6,9 @@ function pimap = part2ind_4imdb()
 % the left lower leg (llleg) and the left upper leg (luleg) of person by setting: 
 % pimap{15}('llleg')      = 19;               % left lower l    eg
 % pimap{15}('luleg')      = 19;               % left upper leg
+%
+% Created by Davide Modolo, 2016
+
 
 pimap = cell(20, 1);                    
 % Will define part index map for the 20 PASCAL VOC object classes in ascending

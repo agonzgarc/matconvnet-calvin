@@ -1,6 +1,6 @@
-% function calvinNNDetection()
 %
 % Copyright by Holger Caesar, 2016
+% Modified by Abel Gonzalez-Garcia, 2017
 
 % Global variables
 global glDatasetFolder glFeaturesFolder;
@@ -78,6 +78,5 @@ calvinn.train();
 %%% Test
 stats = calvinn.testPrtObj();
 
-% TEST EVAL CODE WITH LOADED STATS
 %%% Eval
 evalPartAndObjectDetection(testName, stats, nnOpts);

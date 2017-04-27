@@ -1,6 +1,8 @@
 function pimap = part2names_4imdb()
 
-% Commented out parts are too tiny or rare to be considered
+% Removed parts  that are too tiny or rare to be considered
+%
+% Created by Davide Modolo, 2016
 
 pimap = cell(20, 1);                    
 for ii = 1:20

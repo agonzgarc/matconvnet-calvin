@@ -5,6 +5,8 @@ function [boxes, blobIndIm, blobIndBoxes, hierarchy] = selective_search_boxes_mi
 % IJCV code.
 %
 % Requires selective search code.
+%
+% Modified by Abel Gonzalez-Garcia to accept minBoxWidth as argument, 2016
 
 if ~exist('fast_mode', 'var') || isempty(fast_mode)
   fast_mode = true;

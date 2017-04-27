@@ -2,6 +2,8 @@ function [recall, prec, ap, apUpperBound] = DetectionPartsToPascalVOCFiles(set, 
 
 % Filters overlapping boxes (near duplicates), creates official VOC
 % detection files. Evaluates results.
+%
+% Modified to evaluate part detection using imdbTest struct in DATAopts
 
 global DATAopts;
 

@@ -6,6 +6,7 @@ function setupParts(varargin)
 % 4s/im or about 11h for VOC 2010.
 %
 % Copyright by Holger Caesar, 2016
+% Modified by Abel Gonzalez-Garcia, 2016
 
 %%% Settings
 % Dataset
@@ -30,7 +31,7 @@ imdb = createIMDB(imSet);
 save(sprintf(DATAopts.imdb, imSet), 'imdb');
 
 
-%% GStructs
+%% Save GStructs
 
 saveGStructs('train');
 

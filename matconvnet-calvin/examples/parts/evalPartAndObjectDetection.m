@@ -1,5 +1,7 @@
 function evalPartAndObjectDetection(testName, stats, nnOpts)
 
+% Evaluation of both object and part detection results
+
 global DATAopts;
 
 % Get test images

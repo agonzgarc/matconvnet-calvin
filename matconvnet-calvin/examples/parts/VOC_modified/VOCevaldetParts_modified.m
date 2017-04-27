@@ -1,5 +1,7 @@
 function [rec,prec,ap] = VOCevaldetParts_modified(DATAopts, cls, obj, loadName, draw, flipBoxes)
 
+% Modified to evaluate part detection using imdbTest struct in DATAopts
+
 % load test set
 tic;
 

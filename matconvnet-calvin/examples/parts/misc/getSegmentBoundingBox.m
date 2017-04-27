@@ -1,4 +1,7 @@
 % Returns the smallest possible bounding box containing all true pixels
+% 
+% Created by Davide Modolo, 2016
+
 function bounding_boxes = getSegmentBoundingBox(input)
     if ~iscell(input)
         bounding_boxes = segmentation_bounding_box(input);

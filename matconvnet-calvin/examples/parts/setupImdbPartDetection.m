@@ -1,5 +1,4 @@
 function[imdb] = setupImdbPartDetection(trainName, testName, net)
-% [imdb] = setupImdbDetection(trainName, testName, net)
 
 global DATAopts;
 
