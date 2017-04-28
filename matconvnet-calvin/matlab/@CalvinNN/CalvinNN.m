@@ -43,6 +43,7 @@ classdef CalvinNN < handle
         convertNetwork(obj, net);
         convertNetworkToFastRcnn(obj, varargin);
         convertNetworkToPrtObjFastRcnn(obj, varargin);
+        convertNetworkToPrtObjFastRcnnObjAppCls(obj, varargin);
         init(obj, varargin);
         plotStats(obj, epochs, stats, plotAccuracy);
         saveState(obj, fileName);

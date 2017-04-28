@@ -21,4 +21,4 @@ mex(mexOpts{:}, fullfile(codeDir, 'roipool', 'roiPooling_backward.cpp'));
 % Misc
 mex(mexOpts{:}, fullfile(codeDir, 'misc', 'computeBlobOverlapAnyPair.cpp'));
 mex(mexOpts{:}, fullfile(codeDir, 'misc', 'scoreBlobIoUs.cpp'));
-mex(mexOpts{:}, fullfile(codeDir, 'misc', 'computeIoATableSingle.cpp'));
+mex(mexOpts{2:3}, fullfile(codeDir, 'misc', 'computeIoATableSingle.cpp'));

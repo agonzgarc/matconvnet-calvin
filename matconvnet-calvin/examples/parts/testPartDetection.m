@@ -10,6 +10,7 @@ function [results] = testPartDetection(imdb, nnOpts, net, inputs, ~)
 % Jasper: Probably need to do something more robust here
 %
 % Copyright by Jasper Uijlings, 2015
+% Modified by Abel Gonzalez-Garcia, 2016
 
 if isfield(nnOpts, 'maxNumBoxesPerImTest')
     maxNumBoxesPerImTest = nnOpts.maxNumBoxesPerImTest;

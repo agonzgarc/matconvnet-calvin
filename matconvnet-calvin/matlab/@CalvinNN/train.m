@@ -59,9 +59,27 @@ for epoch = start + 1 : obj.nnOpts.numEpochs
     
     % Plot statistics
     if obj.nnOpts.plotEval
-        plotAccuracy = isfield(obj.stats.val, 'accuracy') && obj.nnOpts.plotAccuracy;
-        obj.plotStats(1:epoch, obj.stats, plotAccuracy);
+        %plotAccuracy = isfield(obj.stats.val, 'accuracy') && obj.nnOpts.plotAccuracy;
+        %obj.plotStats(1:epoch, obj.stats, plotAccuracy);
         
+	% Abel - Don't use plotStats, it only accepts one 'objective'...
+	figure(1); clf;
+        values = [];
+        leg = {};
+        datasetModes = {'train', 'val'};
+        for datasetModeIdx = 1:numel(datasetModes)
+            datasetMode = datasetModes{datasetModeIdx};
+            
+            for f = setdiff(fieldnames(obj.stats.train)', {'num', 'time'})
+                f = char(f); %#ok<FXSET>
+                leg{end+1} = sprintf('%s (%s)', f, datasetMode); %#ok<AGROW>
+                tmp = [obj.stats.(datasetMode).(f)];
+                values(end+1,:) = tmp(1,:)'; %#ok<AGROW>
+            end
+        end
+        plot(1:epoch, values');
+        legend(leg{:}); xlabel('epoch'); ylabel('objective');
+        grid on;
         drawnow;
         print(1, modelFigPath, '-dpdf'); %#ok<MCPRT>
     end

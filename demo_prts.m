@@ -27,5 +27,6 @@ setupParts();
 calvinNNPartDetection();
 
 % Train and test our model, using as input baseline network
+calvinNNPartDetectionObjAppCls();
 
 

@@ -13,27 +13,22 @@ downloadFolder = fullfile(rootFolder, 'data', 'Downloads');
 zipFileData = fullfile(downloadFolder, zipNameData);
 partsFolder = fullfile(datasetFolder, 'VOCdevkit','VOC2010');
 
-% Download dataset
-if ~exist(partsFolder, 'dir')
-    % Create folder
-    if ~exist(datasetFolder, 'dir')
-        mkdir(datasetFolder);
-    end
-    if ~exist(downloadFolder, 'dir')
-        mkdir(downloadFolder);
-    end
-    
-    % Download tar file
-    if ~exist(zipFileData, 'file')
-        fprintf('Downloading PASCAL-Part dataset...\n');
-        urlwrite(urlData, zipFileData);
-    end
-
-    % Untar it
-    fprintf('Unpacking PASCAL-Part annotations...\n');
-    untar(zipFileData, partsFolder);
-   
+% Create folder
+if ~exist(datasetFolder, 'dir')
+    mkdir(datasetFolder);
+end
+if ~exist(downloadFolder, 'dir')
+    mkdir(downloadFolder);
 end
 
-% Add to path
-addpath(devkitFolder);
+% Download tar file
+if ~exist(zipFileData, 'file')
+    fprintf('Downloading PASCAL-Part dataset...\n');
+    websave(zipFileData,urlData);
+end
+
+% Untar it
+fprintf('Unpacking PASCAL-Part annotations...\n');
+untar(zipFileData, partsFolder);
+   
+

@@ -1,4 +1,4 @@
-function[imdb] = setupImdbPartDetection(trainName, testName, net)
+function[imdb] = setupImdbPartDetection(imdbFunc,trainName, testName, net)
 
 global DATAopts;
 
@@ -24,7 +24,7 @@ datasetIdx{1} = (1:length(trainIms))';  % Jasper: Use all training images. Only 
 datasetIdx{2} = (length(trainIms)+1:length(trainIms)+501)'; % Use part of the test images for validation. Not entirely legal, but otherwise it will take much longer to get where we want.
 datasetIdx{3} = (length(trainIms)+1:length(allIms))';
 
-imdb = ImdbPartDetectionJointObjPrt(DATAopts.imgpath(1:end-6), ...        % path
+imdb = imdbFunc(DATAopts.imgpath(1:end-6), ...        % path
     DATAopts.imgpath(end-3:end), ...      % image extension
     DATAopts.gStructPath, ...             % gStruct path
     allIms, ...                           % all images

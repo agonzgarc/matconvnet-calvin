@@ -1,6 +1,5 @@
 %
 % Copyright by Holger Caesar, 2016
-%
 % Modified by Abel Gonzalez-Garcia, 2017
 
 % Global variables
@@ -17,8 +16,9 @@ datasetDir = [fullfile(glDatasetFolder, vocName), '/'];
 
 
 % Specify paths
-outputFolder = fullfile(glFeaturesFolder, 'CNN-Models', 'Parts', vocName, sprintf('%s-baseline', vocName));
-netPath = fullfile(glFeaturesFolder, 'CNN-Models', 'matconvnet', 'imagenet-caffe-alex.mat');
+outputFolder = fullfile(glFeaturesFolder, 'CNN-Models', 'Parts', vocName, sprintf('%s-ObjAppCls', vocName));
+% Initialize network with baseline
+netPath = fullfile(glFeaturesFolder, 'CNN-Models', 'Parts', vocName, sprintf('%s-baseline', vocName), 'net-epoch-16.mat');
 logFilePath = fullfile(outputFolder, 'log.txt');
 
 % Fix randomness
@@ -49,7 +49,7 @@ nnOpts.expDir = outputFolder;
 nnOpts.convertToTrain = 0; % perform explicit conversion to our architecure
 nnOpts.fastRcnn = 0;
 nnOpts.bboxRegress = 1;
-nnOpts.gpus = 1; % for automatic selection use: SelectIdleGpu();
+nnOpts.gpus = []; % for automatic selection use: SelectIdleGpu();
 
 % Create outputFolder
 if ~exist(outputFolder, 'dir')
@@ -61,17 +61,19 @@ diary(logFilePath);
 
 %%% Setup
 % Start from pretrained network
-net = load(nnOpts.misc.netPath);
+netBaseline = load(nnOpts.misc.netPath);
+net = netBaseline.net;
 
 % Setup imdb
-imdb = setupImdbPartDetection(@ImdbPartDetectionJointObjPrt,trainName, testName, net);
+imdb = setupImdbPartDetection(@ImdbPartDetectionJointObjPrtObjAppCls,trainName, testName, net);
 
 % Create calvinNN CNN class
 % Do not transform into fast-rcnn with bbox regression
 calvinn = CalvinNN(net, imdb, nnOpts);
 
 % Perform here the conversion to part/obj architecture
-calvinn.convertNetworkToPrtObjFastRcnn;
+calvinn.convertNetworkToPrtObjFastRcnnObjAppCls('numObjClasses',imdb.numClassesObj,...
+    'numPrtClasses',imdb.numClassesPrt);
 
 %%% Train
 calvinn.train();
