@@ -11,7 +11,7 @@ Code created by Abel Gonzalez-Garcia, 2016.
 Overview of our model:
 <img src="http://calvin.inf.ed.ac.uk/wp-content/uploads/data/parts/modelObjPrt.png" alt="Overview of our part detection approach" width="100%">
 
-Note: only baseline available now.
+Note: Relative location branch not yet available. 
 
 
 ## Overview
@@ -44,20 +44,14 @@ Note: only baseline available now.
     - `cd matconvnet-calvin/matlab; vl_compilenn_calvin(); cd ../..;`
   - Add files to Matlab path
     - `setup();`
-  - (Optional) Download pretrained model:
-    - `downloadModel('parts');`
-
+ 
 ## Instructions
 - **Usage:** Run `demo_parts()`
 - **What:** This script downloads the datasets (PASCAL VOC2010 and PASCAL-Part), network (AlexNet) and Selective Search code. It creates the structures with all the necessary object and part information.
-Then it trains our baseline model for joint object and part detection. 
-- **Model:** Training this model takes about Xh on a Titan X GPU. If you just want to use it you can download the pretrained model in the installation step above. Then run the demo to see the test results.
-- **Results:** If the program executes correctly, it will print the per-class results in average precision and their mean (mAP) for each of the 105 part classes in PASCAL-Part and 20 objects classes in PASCAL VOC. The example model achieves X% mAP on the validation set using no external training data.
+Finally, it first trains the baseline model for joint object and part detection and then it trains our model with object appearance and class branches, initialized with the previously trained baseline model. 
+- **Results:** If the program executes correctly, it will print the per-class results in average precision and their mean (mAP) for each of the 105 part classes in PASCAL-Part and 20 objects classes in PASCAL VOC. The example model achieves 28.8% mAP for parts on the validation set using no external training data.
 - **Note:** The results vary due to the random order of images presented during training. To reproduce the above results we fix the initial seed of the random number generator.
  
- 
-## Training for different datasets
-
 
 ## References
 - \[1\] **Objects as Context for Part Detection** by Gonzalez-Garcia et al., arXiv 2017, http://arxiv.org/abs/1703.09529 

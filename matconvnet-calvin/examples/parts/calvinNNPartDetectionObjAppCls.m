@@ -49,7 +49,7 @@ nnOpts.expDir = outputFolder;
 nnOpts.convertToTrain = 0; % perform explicit conversion to our architecure
 nnOpts.fastRcnn = 0;
 nnOpts.bboxRegress = 1;
-nnOpts.gpus = []; % for automatic selection use: SelectIdleGpu();
+nnOpts.gpus = 1; % for automatic selection use: SelectIdleGpu();
 
 % Create outputFolder
 if ~exist(outputFolder, 'dir')

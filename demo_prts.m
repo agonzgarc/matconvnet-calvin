@@ -22,8 +22,6 @@ downloadSelectiveSearch();
 setupParts();
 
 % Train and test baseline network
-
-% Add 'if' here to decide whether train baseline net or download
 calvinNNPartDetection();
 
 % Train and test our model, using as input baseline network
