@@ -1,4 +1,4 @@
-function[imdb] = setupImdbPartDetection(imdbFunc,trainName, testName, net)
+function[imdb] = setupImdbPartDetection(imdbFunc,trainName, testName, net, ONparams)
 
 global DATAopts;
 
@@ -10,8 +10,8 @@ trash = load(sprintf(DATAopts.imdb, testName));
 imdbTest = trash.imdb;
 clear trash;
 % Consider only images with at least one part 
-trainIms = imdbTrain.image_ids(unique(imdbTrain.mapping(:,4)));
-testIms = imdbTest.image_ids(unique(imdbTest.mapping(:,4)));
+trainIms = imdbTrain.image_ids;
+testIms = imdbTest.image_ids;
 
 % Make train, val, and test set. For Pascal, I illegally use part of the test images
 % as validation set. This is to match Girshick performance while still having
@@ -24,12 +24,27 @@ datasetIdx{1} = (1:length(trainIms))';  % Jasper: Use all training images. Only 
 datasetIdx{2} = (length(trainIms)+1:length(trainIms)+501)'; % Use part of the test images for validation. Not entirely legal, but otherwise it will take much longer to get where we want.
 datasetIdx{3} = (length(trainIms)+1:length(allIms))';
 
-imdb = imdbFunc(DATAopts.imgpath(1:end-6), ...        % path
-    DATAopts.imgpath(end-3:end), ...      % image extension
-    DATAopts.gStructPath, ...             % gStruct path
-    allIms, ...                           % all images
-    datasetIdx, ...                       % division into train/val/test
-    net.meta.normalization.averageImage);      % average image used to pretrain network
+if isempty(ONparams)
+    imdb = imdbFunc(DATAopts.imgpath(1:end-6), ...        % path
+        DATAopts.imgpath(end-3:end), ...      % image extension
+        DATAopts.gStructPath, ...             % gStruct path
+        allIms, ...                           % all images
+        datasetIdx, ...                       % division into train/val/test
+        net.meta.normalization.averageImage);      % average image used to pretrain network
+else
+    % Get mapping from global part idx to class idx
+    [~, idxPartGlobal2idxClass]  = getPartNames(imdbTrain);
+    
+    imdb = imdbFunc(DATAopts.imgpath(1:end-6), ...        % path
+        DATAopts.imgpath(end-3:end), ...      % image extension
+        DATAopts.gStructPath, ...             % gStruct path
+        allIms, ...                           % all images
+        datasetIdx, ...                       % division into train/val/test
+        net.meta.normalization.averageImage,...  % average image used to pretrain network
+        ONparams.numOuts,...            % extra Offset Net params
+        idxPartGlobal2idxClass,...
+        ONparams.idxObjClassRem);      
+end
 
 % Usually instance weighting gives better performance. But not Girshick style
 % imdbPascal.SetInstanceWeighting(true);

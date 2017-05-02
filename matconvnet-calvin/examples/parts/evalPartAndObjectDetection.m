@@ -9,11 +9,11 @@ trash = load(sprintf(DATAopts.imdb, testName));
 imdbTest = trash.imdb;
 clear trash;
 % Use images with at least one part
-testIms = imdbTest.image_ids(unique(imdbTest.mapping(:,4)));
+testIms = imdbTest.image_ids;
 
 % get image sizes
 testCount = length(testIms);
-imSizes = imdbTest.sizes(unique(imdbTest.mapping(:,4)),:);
+imSizes = imdbTest.sizes;
 
 % Add imdb to DATAopts for part detection evaluation
 DATAopts.imdbTest = imdbTest;

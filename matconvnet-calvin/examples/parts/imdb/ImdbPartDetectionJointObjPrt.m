@@ -50,8 +50,7 @@ classdef ImdbPartDetectionJointObjPrt < ImdbMatbox
                 [boxesObj, labelsObj, overlapScoresObj, regressionFactorsObj] = obj.SamplePosAndNegFromGstructObj(gStruct, obj.boxesPerIm);
 
                 % Assign elements to cell array for use in training the network
-                % WHAT IF one batch is smaller than another? --> deal here
-                numElements = min(obj.boxesPerIm, size(boxesPrt,1));
+                numElements = min(obj.boxesPerIm, max(size(boxesPrt,1), size(boxesObj,1)));
                 
                 % Input image and size are shared for Obj and Prt
                 numBatchFields =  4 + 4 * (2 + obj.boxRegress + obj.instanceWeighting);
@@ -145,66 +144,76 @@ classdef ImdbPartDetectionJointObjPrt < ImdbMatbox
             overlap = gStruct.overlapPrt(gStruct.boxesPrt,:);
             class = gStruct.classPrt(gStruct.boxesPrt,:);
             numClasses = obj.numClassesPrt;
-
-            % Get positive, negative, and true GT keys
-            [maxOverlap, classOverlap] = max(overlap, [], 2);
-
-            posKeys = find(maxOverlap >= obj.posOverlap & class == 0);
-            negKeys = find(maxOverlap < obj.negOverlapRange(2) & maxOverlap >= obj.negOverlapRange(1) & class == 0);
-            gtKeys = find(class > 0);
             
-            % If there are more gtKeys than the fraction of positives, just
-            % take a subset
-            if length(gtKeys) > numSamples * obj.posFraction
-                gtKeys = gtKeys(randperm(length(gtKeys), numSamples * obj.posFraction));
-            end
-
-            % Get correct number of positive and negative samples
-            numExtraPos = numSamples * obj.posFraction - length(gtKeys);
-            numExtraPos = min(numExtraPos, length(posKeys));
-            if numExtraPos > 0
-                posKeys = posKeys(randperm(length(posKeys), numExtraPos));
+            if sum(class) == 0
+                % There are no parts in image
+                boxes = allBoxes(1,:); % Dummy box
+                % Label 0 and regression target NaN so loss doesn't affect
+                labels = 0;
+                overlapScores = 0;
+                regressionTargets = nan([1 4 * numClasses], 'like', boxes);
             else
-               numExtraPos = 0;
-               posKeys = [];
-            end
-            numNeg = numSamples - numExtraPos - length(gtKeys);
-            numNeg = min(numNeg, length(negKeys));
-            negKeys = negKeys(randperm(length(negKeys), numNeg));
 
-            % Concatenate for final keys and labs
-            keys = cat(1, gtKeys, posKeys, negKeys);
-            labels = cat(1, class(gtKeys), classOverlap(posKeys), zeros(numNeg, 1));
-            labels = single(labels + 1); % Add 1 for background class
-            boxes = allBoxes(keys,:);
-            
-            overlapScores = cat(1, ones(length(gtKeys),1), maxOverlap(posKeys), maxOverlap(negKeys));
+                % Get positive, negative, and true GT keys
+                [maxOverlap, classOverlap] = max(overlap, [], 2);
 
-            % Calculate regression targets.
-            % Jasper: I simplify Girshick by implementing regression through four
-            % scalars which scale the box with respect to its center.
-            if nargout == 4
-                % Create NaN array: nans represent numbers which will not be active
-                % in regression
-                regressionTargets = nan([size(boxes,1) 4 * numClasses], 'like', boxes);
-                
-                % Get scaling factors for all positive boxes
-                gtBoxes = allBoxes(gtKeys,:);
-                for bI = 1:length(gtKeys)+length(posKeys)
-                    % Get current box and corresponding GT box
-                    currPosBox = boxes(bI,:);
-                    [~, gtI] = BoxBestOverlapFastRcnn(gtBoxes, currPosBox);
-                    currGtBox = gtBoxes(gtI,:);
-                    
-                    % Get range of regression target based on the label of the gt box
-                    targetRangeBegin = 4 * (labels(bI)-1)+1;
-                    targetRange = targetRangeBegin:(targetRangeBegin+3);
-                    
-                    % Set regression targets
-                    regressionTargets(bI,targetRange) = BoxRegressionTargetGirshick(currGtBox, currPosBox);
-                    
+                posKeys = find(maxOverlap >= obj.posOverlap & class == 0);
+                negKeys = find(maxOverlap < obj.negOverlapRange(2) & maxOverlap >= obj.negOverlapRange(1) & class == 0);
+                gtKeys = find(class > 0);
+
+                % If there are more gtKeys than the fraction of positives, just
+                % take a subset
+                if length(gtKeys) > numSamples * obj.posFraction
+                    gtKeys = gtKeys(randperm(length(gtKeys), numSamples * obj.posFraction));
                 end
-            end 
+
+                % Get correct number of positive and negative samples
+                numExtraPos = numSamples * obj.posFraction - length(gtKeys);
+                numExtraPos = min(numExtraPos, length(posKeys));
+                if numExtraPos > 0
+                    posKeys = posKeys(randperm(length(posKeys), numExtraPos));
+                else
+                   numExtraPos = 0;
+                   posKeys = [];
+                end
+                numNeg = numSamples - numExtraPos - length(gtKeys);
+                numNeg = min(numNeg, length(negKeys));
+                negKeys = negKeys(randperm(length(negKeys), numNeg));
+
+                % Concatenate for final keys and labs
+                keys = cat(1, gtKeys, posKeys, negKeys);
+                labels = cat(1, class(gtKeys), classOverlap(posKeys), zeros(numNeg, 1));
+                labels = single(labels + 1); % Add 1 for background class
+                boxes = allBoxes(keys,:);
+
+                overlapScores = cat(1, ones(length(gtKeys),1), maxOverlap(posKeys), maxOverlap(negKeys));
+
+                % Calculate regression targets.
+                % Jasper: I simplify Girshick by implementing regression through four
+                % scalars which scale the box with respect to its center.
+                if nargout == 4
+                    % Create NaN array: nans represent numbers which will not be active
+                    % in regression
+                    regressionTargets = nan([size(boxes,1) 4 * numClasses], 'like', boxes);
+
+                    % Get scaling factors for all positive boxes
+                    gtBoxes = allBoxes(gtKeys,:);
+                    for bI = 1:length(gtKeys)+length(posKeys)
+                        % Get current box and corresponding GT box
+                        currPosBox = boxes(bI,:);
+                        [~, gtI] = BoxBestOverlapFastRcnn(gtBoxes, currPosBox);
+                        currGtBox = gtBoxes(gtI,:);
+
+                        % Get range of regression target based on the label of the gt box
+                        targetRangeBegin = 4 * (labels(bI)-1)+1;
+                        targetRange = targetRangeBegin:(targetRangeBegin+3);
+
+                        % Set regression targets
+                        regressionTargets(bI,targetRange) = BoxRegressionTargetGirshick(currGtBox, currPosBox);
+
+                    end
+                end 
+            end
         end
         
         
