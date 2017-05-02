@@ -13,6 +13,10 @@ clear trash;
 trainIms = imdbTrain.image_ids;
 testIms = imdbTest.image_ids;
 
+if nargin < 5
+    ONparams = [];
+end
+
 % Make train, val, and test set. For Pascal, I illegally use part of the test images
 % as validation set. This is to match Girshick performance while still having
 % meaningful graphs for the validation set.
