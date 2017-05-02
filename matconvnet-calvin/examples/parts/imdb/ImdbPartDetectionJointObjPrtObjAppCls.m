@@ -156,6 +156,7 @@ classdef ImdbPartDetectionJointObjPrtObjAppCls < ImdbMatbox
                 labels = 0;
                 overlapScores = 0;
                 regressionTargets = nan([1 4 * numClasses], 'like', boxes);
+                genKeys = 1;
             else
                 % Get positive, negative, and true GT keys
                 [maxOverlap, classOverlap] = max(overlap, [], 2);
