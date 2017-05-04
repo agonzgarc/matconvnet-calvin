@@ -167,7 +167,7 @@ softmaxlossBlock = dagnn.LossWeighted('loss', 'softmaxlog');
 addLayer(obj.net, 'softmaxlossPrt', softmaxlossBlock,...
     {obj.net.layers(obj.net.getLayerIndex([finalFCName 'Prt'])).outputs{1}, 'labelPrt','instanceWeightsPrt'},{'objectivePrt'});
 
-
+sortLayers(obj.net);
 
 %%% Add bounding box regression layer
 if obj.nnOpts.bboxRegress

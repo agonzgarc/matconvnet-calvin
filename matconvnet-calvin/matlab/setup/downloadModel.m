@@ -21,6 +21,19 @@ elseif strcmp(modelName, 'e2s2_fast')
 elseif strcmp(modelName, 'e2s2_full')
     exportName = 'E2S2_SiftFlow_model_full';
     exportFilesTarget = fullfile(glBaseFolder, 'Features', 'CNN-Models', 'E2S2', 'SiftFlow', 'Run1', 'SiftFlow_e2s2_run1_exp2');
+elseif strcmp(modelName, 'parts_baseline')
+    baseUrl = 'http://groups.inf.ed.ac.uk/calvin/gonzalez-parts';
+    exportName = 'PartsObj_VOC2010_Baseline';
+    exportFilesTarget = fullfile(glBaseFolder, 'Features', 'CNN-Models', 'Parts', 'VOC2010', 'VOC2010-baseline');
+elseif strcmp(modelName, 'parts_objappcls')
+    baseUrl = 'http://groups.inf.ed.ac.uk/calvin/gonzalez-parts';
+    exportName = 'PartsObj_VOC2010_ObjAppCls';
+    exportFilesTarget = fullfile(glBaseFolder, 'Features', 'CNN-Models', 'Parts', 'VOC2010', 'VOC2010-ObjAppCls');
+elseif strcmp(modelName, 'parts_offsetnet')
+    baseUrl = 'http://groups.inf.ed.ac.uk/calvin/gonzalez-parts';
+    exportName = 'PartsObj_VOC2010_OffsetNet';
+    exportFilesTarget = fullfile(glBaseFolder, 'Features', 'CNN-Models', 'Parts', 'VOC2010', 'VOC2010-OffsetNet');
+
 else
     error('Error: Unknown model: %s', modelName);
 end

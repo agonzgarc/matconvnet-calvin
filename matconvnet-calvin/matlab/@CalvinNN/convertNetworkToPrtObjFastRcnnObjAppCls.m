@@ -123,7 +123,7 @@ if obj.nnOpts.bboxRegress
     
 end
 
-% sortLayers(obj.net);
+sortLayers(obj.net);
 
 %%% Set correct learning rates and biases (Girshick style)
 if obj.nnOpts.fastRcnnParams
