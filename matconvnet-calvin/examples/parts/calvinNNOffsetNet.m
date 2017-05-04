@@ -16,7 +16,7 @@ datasetDir = [fullfile(glDatasetFolder, vocName), '/'];
 
 
 % Specify paths
-outputFolder = fullfile(glFeaturesFolder, 'CNN-Models', 'Parts', vocName, sprintf('%s-ObjAppCls', vocName));
+outputFolder = fullfile(glFeaturesFolder, 'CNN-Models', 'Parts', vocName, sprintf('%s-OffsetNet', vocName));
 % Initialize network with baseline
 netPath = fullfile(glFeaturesFolder, 'CNN-Models', 'Parts', vocName, sprintf('%s-baseline', vocName), 'net-epoch-16.mat');
 logFilePath = fullfile(outputFolder, 'log.txt');
@@ -53,13 +53,14 @@ nnOpts.numSubBatches = nnOpts.batchSize; % 1 image per sub-batch
 nnOpts.weightDecay = 5e-4;
 nnOpts.momentum = 0.9;
 nnOpts.numEpochs = 16;
-nnOpts.learningRate = [repmat(1e-3, 12, 1); repmat(1e-4, 4, 1)];
+% Smaller LR for offset net
+nnOpts.learningRate = [repmat(1e-4, 12, 1); repmat(1e-5, 4, 1)];
 nnOpts.misc.netPath = netPath;
 nnOpts.expDir = outputFolder;
 nnOpts.convertToTrain = 0; % perform explicit conversion to our architecure
 nnOpts.fastRcnn = 0;
 nnOpts.bboxRegress = 0; % no bbox-regress for Offset Net
-nnOpts.gpus = []; % for automatic selection use: SelectIdleGpu();
+nnOpts.gpus = 1; % for automatic selection use: SelectIdleGpu();
 
 % Create outputFolder
 if ~exist(outputFolder, 'dir')
