@@ -73,13 +73,19 @@ classdef ImdbOffsetNet < ImdbMatbox
                
                 
             else
-                % Test set. Get all boxes
-                [superboxes] = obj.SampleAllBoxesFromGstruct(gStruct);
-                numElements = size(gStruct.boxes,1);
-                batchData{6} = superboxes';
-                batchData{5} = 'superboxes';
-                batchData{4} = oriImSize;
-                batchData{3} = 'oriImSize';
+               % Test set. Get all boxes
+                [boxesPrt, keysPrt] = obj.SampleAllBoxesFromGstructPrt(gStruct);
+                [boxesObj, keysObj] = obj.SampleAllBoxesFromGstructObj(gStruct);
+
+                numElements = max(size(boxesPrt,1),size(boxesObj,1));
+                batchData{10} = gStruct.insideness(keysPrt,keysObj);
+                batchData{9} = 'insideness';
+                batchData{8} = oriImSize;
+                batchData{7} = 'oriImSize';
+                batchData{6} = boxesObj';
+                batchData{5} = 'boxesObj';
+                batchData{4} = boxesPrt';
+                batchData{3} = 'boxesPrt';
                 batchData{2} = image;
                 batchData{1} = 'input';
             end
@@ -234,9 +240,16 @@ classdef ImdbOffsetNet < ImdbMatbox
             presenceTargets = presenceTargets(~idxEmpty,:);
         end
         
-        function [superboxes] = SampleAllBoxesFromGstruct(obj, gStruct)
-            superboxes = gStruct.obj_boxes;
+        function [boxes, keys] = SampleAllBoxesFromGstructPrt(~,gStruct)
+            boxes = gStruct.boxes(gStruct.boxesPrt,:);
+            keys = find(gStruct.boxesPrt);
         end
+
+        function [boxes, keys] = SampleAllBoxesFromGstructObj(~,gStruct)
+            boxes = gStruct.boxes(gStruct.boxesObj,:);
+            keys = find(gStruct.boxesObj);
+        end
+        
         
         % Load gStruct
         function gStruct = LoadGStruct(obj,imI)

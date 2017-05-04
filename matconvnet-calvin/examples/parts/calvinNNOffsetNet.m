@@ -32,7 +32,7 @@ assert(~isempty(DATAopts), 'Error: Dataset not initialized properly!');
 
 
 % Task-specific
-nnOpts.testFn = @testPartDetection;
+nnOpts.testFn = @testPartDetectionwOffsetNet;
 nnOpts.misc.overlapNms = 0.3;
 % Objectives for both parts and objects
 nnOpts.derOutputs = {'dispWindows1Objective', 1};
@@ -78,6 +78,8 @@ net = netBaseline.net;
 ONparams.numOuts =  numOuts;  
 % Object classes without parts (here for PASCAL-Part, change if other data)
 ONparams.idxObjClassRem = [4 9 11 18];
+ONparams.test = 0;
+
 
 imdb = setupImdbPartDetection(@ImdbOffsetNet,trainName, testName, net, ONparams);
 
@@ -94,7 +96,23 @@ calvinn.train();
 
 %%% Test
 netObjAppClsPath = fullfile(glFeaturesFolder, 'CNN-Models', 'Parts', vocName, sprintf('%s-ObjAppCls', vocName), 'net-epoch-16.mat');
+
+% Load ObjAppCls network so we can add OffsetNet to it
 netObjAppCls = load(netObjAppClsPath);
 netObjAppCls = netObjAppCls.net;
 
+% Setup again imdb --> for testing we need all images (without parts too)
+ONparams.test = 1;
+[imdb, idxPartGlobal2idxClass] = setupImdbPartDetection(@ImdbOffsetNet, trainName, testName, net, ONparams);
 
+
+nnOpts.misc.numOuts = numOuts;
+nnOpts.misc.idxPartGlobal2idxClass = idxPartGlobal2idxClass(2:end);
+
+calvinnObjAppCls = CalvinNN(netObjAppCls, imdb, nnOpts);
+
+calvinnObjAppCls.mergeObjAppClswOffsetNet('offsetNet', calvinn.net, 'numOuts', max(numOuts));
+
+stats = calvinnObjAppCls.test;
+
+save([nnOpts.expDir 'stats.mat'], 'stats','-v7.3');

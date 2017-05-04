@@ -1,4 +1,4 @@
-function[imdb] = setupImdbPartDetection(imdbFunc,trainName, testName, net, ONparams)
+function [imdb, idxPartGlobal2idxClass] = setupImdbPartDetection(imdbFunc,trainName, testName, net, ONparams)
 
 global DATAopts;
 
@@ -13,12 +13,18 @@ clear trash;
 trainIms = imdbTrain.image_ids;
 testIms = imdbTest.image_ids;
 
+% Get mapping from global part idx to class idx
+[~, idxPartGlobal2idxClass]  = getPartNames(imdbTrain);
+    
+
 if nargin < 5
     ONparams = [];
 else
-    % Consider only images with at least one part for OffsetNet
-    trainIms = imdbTrain.image_ids(unique(imdbTrain.mapping(:,4)));
-    testIms = imdbTest.image_ids(unique(imdbTest.mapping(:,4)));
+    % Consider only images with at least one part when training OffsetNet
+    if ~ONparams.test
+        trainIms = imdbTrain.image_ids(unique(imdbTrain.mapping(:,4)));
+        testIms = imdbTest.image_ids(unique(imdbTest.mapping(:,4)));
+    end
 end
 
 % Make train, val, and test set. For Pascal, I illegally use part of the test images
@@ -40,9 +46,6 @@ if isempty(ONparams)
         datasetIdx, ...                       % division into train/val/test
         net.meta.normalization.averageImage);      % average image used to pretrain network
 else
-    % Get mapping from global part idx to class idx
-    [~, idxPartGlobal2idxClass]  = getPartNames(imdbTrain);
-    
     imdb = imdbFunc(DATAopts.imgpath(1:end-6), ...        % path
         DATAopts.imgpath(end-3:end), ...      % image extension
         DATAopts.gStructPath, ...             % gStruct path

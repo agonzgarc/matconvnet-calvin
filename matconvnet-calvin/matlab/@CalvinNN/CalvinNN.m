@@ -23,7 +23,7 @@ classdef CalvinNN < handle
                 nnOpts = struct();
             end
             
-            % Set fields
+            % Set fields3
             obj.imdb = imdb;
             
             % Init options and GPUs
@@ -45,6 +45,7 @@ classdef CalvinNN < handle
         convertNetworkToPrtObjFastRcnn(obj, varargin);
         convertNetworkToPrtObjFastRcnnObjAppCls(obj, varargin);
         convertNetworkToOffsetNet(obj, varargin);
+        mergeObjAppClswOffsetNet(obj, varargin);
         init(obj, varargin);
         plotStats(obj, epochs, stats, plotAccuracy);
         saveState(obj, fileName);
