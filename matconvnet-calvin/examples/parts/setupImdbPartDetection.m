@@ -9,12 +9,16 @@ imdbTrain = trash.imdb;
 trash = load(sprintf(DATAopts.imdb, testName));
 imdbTest = trash.imdb;
 clear trash;
-% Consider only images with at least one part 
+
 trainIms = imdbTrain.image_ids;
 testIms = imdbTest.image_ids;
 
 if nargin < 5
     ONparams = [];
+else
+    % Consider only images with at least one part for OffsetNet
+    trainIms = imdbTrain.image_ids(unique(imdbTrain.mapping(:,4)));
+    testIms = imdbTest.image_ids(unique(imdbTest.mapping(:,4)));
 end
 
 % Make train, val, and test set. For Pascal, I illegally use part of the test images

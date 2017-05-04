@@ -92,3 +92,9 @@ calvinn.convertNetworkToOffsetNet('numObjClasses',imdb.numClassesObj,...
 %%% Train
 calvinn.train();
 
+%%% Test
+netObjAppClsPath = fullfile(glFeaturesFolder, 'CNN-Models', 'Parts', vocName, sprintf('%s-ObjAppCls', vocName), 'net-epoch-16.mat');
+netObjAppCls = load(netObjAppClsPath);
+netObjAppCls = netObjAppCls.net;
+
+
