@@ -5,10 +5,10 @@
 %
 
 % Train baseline?
-baseline = false;
+baseline = true;
 
 % Use offsetNet for the final model?
-offsetNet = false;
+offsetNet = true;
 
 % Add folders to path
 setup();
@@ -18,14 +18,16 @@ downloadVOC2010();
 
 downloadPASCALParts();
 
-% Download base network
-downloadNetwork('modelName','imagenet-caffe-alex');
+% % Download base network
+% downloadNetwork('modelName','imagenet-caffe-alex');
+% 
+% % Download Selective Search
+% downloadSelectiveSearch();
+% 
+% % Create structures with part and object info
+% setupParts();
 
-% Download Selective Search
-downloadSelectiveSearch();
-
-% Create structures with part and object info
-setupParts();
+times = zeros(3,2);
 
 % Train and te2st baseline network
 if baseline

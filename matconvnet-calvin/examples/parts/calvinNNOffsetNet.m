@@ -86,13 +86,16 @@ imdb = setupImdbPartDetection(@ImdbOffsetNet,trainName, testName, net, ONparams)
 % Create calvinNN CNN class
 % Do not transform into fast-rcnn with bbox regression
 calvinn = CalvinNN(net, imdb, nnOpts);
-
 % Perform here the conversion to part/obj architecture
 calvinn.convertNetworkToOffsetNet('numObjClasses',imdb.numClassesObj,...
     'numPrtClasses',imdb.numClassesPrt,'numOuts',numOuts);
 
+
+t1 = tic();
 %%% Train
 calvinn.train();
+times(3,1) = toc(t1);
+
 
 %%% Test
 netObjAppClsPath = fullfile(glFeaturesFolder, 'CNN-Models', 'Parts', vocName, sprintf('%s-ObjAppCls', vocName), 'net-epoch-16.mat');
@@ -112,7 +115,9 @@ nnOpts.misc.idxPartGlobal2idxClass = idxPartGlobal2idxClass(2:end);
 calvinnObjAppCls = CalvinNN(netObjAppCls, imdb, nnOpts);
 
 calvinnObjAppCls.mergeObjAppClswOffsetNet('offsetNet', calvinn.net, 'numOuts', max(numOuts));
-
+t2 = tic;
 stats = calvinnObjAppCls.test;
+times(3,2) = toc(t2);
 
+times
 save([nnOpts.expDir 'stats.mat'], 'stats','-v7.3');
