@@ -44,8 +44,8 @@ addLayer(obj.net, 'suppSel', dagnn.SupportingSelector(), {['x' num2str(numLastVa
 % Add external fc layers for object appearance with its own RoiPool
 lastConvPoolIdx = obj.net.getLayerIndex(['roi', lastConvPoolName 'Obj']);
 
-firstFCIdx = obj.net.layers(lastConvPoolIdx).outputIndexes;
-roiPoolSize = obj.net.layers(firstFCIdx(2)).block.size(1:2);
+firstFCIdx = obj.net.getLayerIndex([firstFCName 'Obj']);
+roiPoolSize = obj.net.layers(firstFCIdx).block.size(1:2);
 
 roiPoolName = ['roi', lastConvPoolName 'ObjApp'];
 roiPoolBlock = dagnn.RoiPooling('poolSize', roiPoolSize);
