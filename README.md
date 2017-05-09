@@ -1,19 +1,17 @@
-# MatConvNet-Calvin-Parts
+# Semantic Part Detection with Object Context
 
-**MatConvNet-Calvin** is a wrapper around MatConvNet that (re-)implements
-several state of-the-art papers in object detection and semantic segmentation. 
-Calvin is a Computer Vision research group at the University of Edinburgh (http://calvin.inf.ed.ac.uk/). Copyrights by Holger Caesar and Jasper Uijlings, 2015-2016.
-
-**MatConvNet-Calvin-Parts** extends MatConvNet-Calvin for part detection, following our work [1]. 
-The model is based on Fast R-CNN [2] and jointly detects objects and their parts. Part detection is aided by the object class and appearance on top of the part appearance. Additionally, we use the expected relative location of parts inside the objects, based on their appearance. 
-Code created by Abel Gonzalez-Garcia, 2016. 
+**Parts-Object-Context** implements our work [1] on semantic part detection.
+This method is an extension of Fast R-CNN [2] to jointly detect objects and their parts. 
+It uses the object appearance and its class as indicators of what parts to expect.
+Additionally, it also models the expected relative location of parts inside the objects based on their appearance, using a new network module called Offset Net.
+By combining all these cues, our method detects parts in the context of their objects and significantly outperform part detection approaches using part appearance alone.
+Code created by Abel Gonzalez-Garcia. 
 
 Overview of our model:
 <img src="http://calvin.inf.ed.ac.uk/wp-content/uploads/data/parts/modelObjPrt.png" alt="Overview of our part detection approach" width="100%">
 
 
 ## Overview
-- [Methods](#methods)
 - [Dependencies](#dependencies)
 - [Installation](#installation)
 - [Instructions](#instructions)
@@ -21,19 +19,13 @@ Overview of our model:
 - [Disclaimer](#disclaimer)
 - [Contact](#contact)
 
-## Methods
-- **Part Detection with Object Context** \[1\]: Recent part detection approach that improves over methods that only use part appearance. This is an extension of the code of [2] to accept object context for part detection. It also includes a new architecture dubbed Offset Net, with essentially an adaptive number of outputs. 
-- **Fast R-CNN (FRCN)** \[2\]: State-of-the-art object detection method. The original code was implemented for Caffe. This reimplementation ports it to MatConvNet by adding region of interest pooling and a simplified version of bounding box regression.
-
 ## Dependencies
-- **Note:** This software does _not_ work on Windows. 
-- **MatConvNet:** beta20 (http://github.com/vlfeat/matconvnet)
-- **MatConvNet-FCN:** (http://github.com/vlfeat/matconvnet-fcn)
+- **MatConvNet:** beta24 (http://github.com/vlfeat/matconvnet)
 - **Selective Search:** (http://koen.me/research/selectivesearch/)
 - **Datasets:** 
   - **PASCAL VOC 2010:** (http://host.robots.ox.ac.uk/pascal/VOC/voc2010/)
   - **PASCAL-Part:** (http://www.stat.ucla.edu/~xianjie.chen/pascal_part_dataset/pascal_part.html)
-
+- **Note:** This software builds on MatConvNet-Calvin (https://github.com/nightrome/matconvnet-calvin) and does _not_ work on Windows. 
 ## Installation
 - Install Matlab R2015a (or newer) and Git
 - Clone the repository and its submodules from your shell
@@ -49,7 +41,6 @@ Overview of our model:
     - `setup();`
  - (Optional) Download pretrained models:
     - Parts: `downloadModel('parts_baseline'); downloadModel('parts_objappcls'); downloadModel('parts_offsetnet')`
-    - FRCN: `downloadModel('frcn');`
 ## Instructions
 - **Usage:** Run `demo_parts()`
 - **What:** This script downloads the datasets (PASCAL VOC2010 and PASCAL-Part), network (AlexNet) and Selective Search code. It creates the structures with all the necessary object and part information.
