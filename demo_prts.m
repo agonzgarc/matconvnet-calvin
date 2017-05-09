@@ -34,7 +34,7 @@ setupParts();
 if baseline
     calvinNNPartDetection();
 else
-    dowloadModel('parts_baseline');
+    downloadModel('parts_baseline');
 end
 
 % Train and test our model, using as input baseline network

@@ -11,16 +11,19 @@ Code created by Abel Gonzalez-Garcia, 2016.
 Overview of our model:
 <img src="http://calvin.inf.ed.ac.uk/wp-content/uploads/data/parts/modelObjPrt.png" alt="Overview of our part detection approach" width="100%">
 
-Note: Relative location branch not yet available. 
-
 
 ## Overview
+- [Methods](#methods)
 - [Dependencies](#dependencies)
 - [Installation](#installation)
 - [Instructions](#instructions)
 - [References](#references)
 - [Disclaimer](#disclaimer)
 - [Contact](#contact)
+
+## Methods
+- **Part Detection with Object Context** \[1\]: Recent part detection approach that improves over methods that only use part appearance. This is an extension of the code of [2] to accept object context for part detection. It also includes a new architecture dubbed Offset Net, with essentially an adaptive number of outputs. 
+- **Fast R-CNN (FRCN)** \[2\]: State-of-the-art object detection method. The original code was implemented for Caffe. This reimplementation ports it to MatConvNet by adding region of interest pooling and a simplified version of bounding box regression.
 
 ## Dependencies
 - **Note:** This software does _not_ work on Windows. 
@@ -44,12 +47,16 @@ Note: Relative location branch not yet available.
     - `cd matconvnet-calvin/matlab; vl_compilenn_calvin(); cd ../..;`
   - Add files to Matlab path
     - `setup();`
- 
+ - (Optional) Download pretrained models:
+    - Parts: `downloadModel('parts_baseline'); downloadModel('parts_objappcls'); downloadModel('parts_offsetnet')`
+    - FRCN: `downloadModel('frcn');`
 ## Instructions
 - **Usage:** Run `demo_parts()`
 - **What:** This script downloads the datasets (PASCAL VOC2010 and PASCAL-Part), network (AlexNet) and Selective Search code. It creates the structures with all the necessary object and part information.
-Finally, it first trains the baseline model for joint object and part detection and then it trains our model with object appearance and class branches, initialized with the previously trained baseline model. 
-- **Results:** If the program executes correctly, it will print the per-class results in average precision and their mean (mAP) for each of the 105 part classes in PASCAL-Part and 20 objects classes in PASCAL VOC. The example model achieves 28.8% mAP for parts on the validation set using no external training data.
+After this, it first trains the baseline model for joint object and part detection and then it trains our model with object appearance and class branches, initialized with the previously trained baseline model. 
+Finally, it trains Offset Net and merges it with the model that contains the object branches to obtain our final model. 
+- **Model:** Training the baseline model takes about 8h on a Titan X GPU. On the same GPU, the model with object appearance and class takes about 10h and Offset Net takes 5h. If you just want to use them you can download the pretrained models in the installation step above. Then run the demo to see the test results.
+- **Results:** If the program executes correctly, it will print the per-class results in average precision and their mean (mAP) for each of the 105 part classes in PASCAL-Part and 20 objects classes in PASCAL VOC. The baseline model achieves 22.0% mAP for parts (48.7% mAP for objects) on the validation set using no external training data nor bounding-box regression, whereas the model with object appearance and class achieves 25.9% mAP (49.9% mAP for objects). 
 - **Note:** The results vary due to the random order of images presented during training. To reproduce the above results we fix the initial seed of the random number generator.
  
 
