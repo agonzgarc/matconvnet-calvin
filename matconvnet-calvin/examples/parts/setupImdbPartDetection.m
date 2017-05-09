@@ -46,6 +46,10 @@ if isempty(ONparams)
         datasetIdx, ...                       % division into train/val/test
         net.meta.normalization.averageImage);      % average image used to pretrain network
 else
+    if ONparams.trainCoeffs
+        % Test on train for training coefficients
+        datasetIdx{3} = (1:length(trainIms))';
+    end
     imdb = imdbFunc(DATAopts.imgpath(1:end-6), ...        % path
         DATAopts.imgpath(end-3:end), ...      % image extension
         DATAopts.gStructPath, ...             % gStruct path

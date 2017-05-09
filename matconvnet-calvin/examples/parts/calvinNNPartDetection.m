@@ -74,14 +74,10 @@ calvinn = CalvinNN(net, imdb, nnOpts);
 calvinn.convertNetworkToPrtObjFastRcnn;
 
 %%% Train
-t1 = tic;
 calvinn.train();
-times(1,1) = toc(t1);
 
-t2 = tic;
 %%% Test
 stats = calvinn.testPrtObj();
-times(1,2) = toc(t2);
 
 %%% Eval
 evalPartAndObjectDetection(testName, stats, nnOpts);

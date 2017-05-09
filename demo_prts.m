@@ -10,6 +10,9 @@ baseline = false;
 % Use offsetNet for the final model?
 offsetNet = false;
 
+% If so, train coefficients?
+trainCoeffs = false;
+
 % Add folders to path
 setup();
 
@@ -27,7 +30,7 @@ downloadSelectiveSearch();
 % Create structures with part and object info
 setupParts();
 
-% Train and te2st baseline network
+% Train and test baseline network
 if baseline
     calvinNNPartDetection();
 else

@@ -59,7 +59,7 @@ nnOpts.misc.netPath = netPath;
 nnOpts.expDir = outputFolder;
 nnOpts.convertToTrain = 0; % perform explicit conversion to our architecure
 nnOpts.fastRcnn = 0;
-nnOpts.bboxRegress = 0; % no bbox-regress for Offset Net
+nnOpts.bboxRegress = 1; % no bbox-regress for Offset Net
 nnOpts.gpus = 1; % for automatic selection use: SelectIdleGpu();
 
 % Create outputFolder
@@ -79,7 +79,7 @@ ONparams.numOuts =  numOuts;
 % Object classes without parts (here for PASCAL-Part, change if other data)
 ONparams.idxObjClassRem = [4 9 11 18];
 ONparams.test = 0;
-
+ONparams.trainCoeffs = 0;
 
 imdb = setupImdbPartDetection(@ImdbOffsetNet,trainName, testName, net, ONparams);
 
@@ -95,6 +95,7 @@ t1 = tic();
 %%% Train
 calvinn.train();
 times(3,1) = toc(t1);
+
 
 
 %%% Test
@@ -119,5 +120,28 @@ t2 = tic;
 stats = calvinnObjAppCls.test;
 times(3,2) = toc(t2);
 
-times
 save([nnOpts.expDir 'stats.mat'], 'stats','-v7.3');
+
+
+%%% Train coefficients if necessary
+if trainCoeffs
+    ONparams.trainCoeffs = 1;
+    imdb = setupImdbPartDetection(@ImdbOffsetNet, trainName, testName, net, ONparams);
+   
+    calvinnObjAppCls = CalvinNN(netObjAppCls, imdb, nnOpts);
+    calvinnObjAppCls.mergeObjAppClswOffsetNet('offsetNet', calvinn.net, 'numOuts', max(numOuts));
+    
+    statsTr = calvinnObjAppCls.test;
+    
+    CM = trainCoefficients('train',statsTr);
+    
+else
+    % Load coefficients
+    trash = load([nnOpts.expDir 'coeffs.mat']);
+    CM = trash.CM;
+    clear trash;
+end
+
+nnOpts.CM = CM;
+evalPartAndObjectDetection(testName, stats, nnOpts);
+

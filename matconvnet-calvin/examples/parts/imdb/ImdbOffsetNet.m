@@ -3,8 +3,8 @@ classdef ImdbOffsetNet < ImdbMatbox
         negOverlapRange = [0 0.3];
         posOverlap = 0.7;
         boxesPerIm = 64;
-        boxRegress = false;
-        instanceWeighting = true;
+        boxRegress = true;
+        instanceWeighting = false;
         numClassesPrt = 1;
         numClassesObj = 1;
         numOuts = 1;
@@ -67,8 +67,8 @@ classdef ImdbOffsetNet < ImdbMatbox
                 batchData{idx} = 'oriImSize';   idx = idx + 1;
                 batchData{idx} = oriImSize;     idx = idx + 1;
                 
-                batchData{idx} = 'instanceWeights';     idx = idx + 1;
-                batchData{idx} = [];       %idx = idx + 1;
+%                 batchData{idx} = 'instanceWeights';     idx = idx + 1;
+%                 batchData{idx} = [];       %idx = idx + 1;
 %                
                
                 

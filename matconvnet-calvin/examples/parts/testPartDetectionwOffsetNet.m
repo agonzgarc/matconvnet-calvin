@@ -117,7 +117,8 @@ end
 % Get top boxes for each category. Perform NMS. Thresholds defined at top of function
 currMaxBoxes = min(maxNumBoxesPerImTest, size(boxes, 1));
 
-for cI = size(scores,2) : -1 : 1
+% Do not save info for background class (1)
+for cI = size(scores,2) : -1 :2
     % Get top scores and boxes
     [currScoresT, sI] = sort(scores(:,cI), 'descend');
     currScoresT = currScoresT(1:currMaxBoxes);
@@ -154,10 +155,7 @@ end
 
 %% Rel Loc
 
-
-
-% CHANGE 4
-regressFactors = cell(4,1);
+regressFactors = cell(max(nnOpts.misc.numOuts),1);
 
 % Get displaced windows regression scores
 for idxNum = 1:4

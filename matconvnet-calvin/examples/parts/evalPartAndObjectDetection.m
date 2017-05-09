@@ -20,15 +20,54 @@ DATAopts.imdbTest = imdbTest;
 
 [DATAopts.prt_classes, idxPartGlobal2idxClass]  = getPartNames(imdbTest);
 
+minDetectionScore = 0.01;
+
 %% Parts
 
 for cI = 1:105    
     %%
-    currBoxes = cell(length(testIms), 1);
-    currScores = cell(length(testIms), 1);
-    for i=1:length(testIms)
-        currBoxes{i} = stats.results(i).boxesPrt{cI+1};
-        currScores{i} = stats.results(i).scoresPrt{cI+1};
+    currBoxes = cell(testCount, 1);
+    currScores = cell(testCount, 1);
+    for i=1:testCount
+        
+        
+        if isfield(nnOpts,'CM')
+            currNetBoxes = stats.results(i).boxesPrt;
+            currNetScores = stats.results(i).scoresPrt{cI+1};
+            
+            % Assume stats has ON info if nnOpts has coefficients field
+            scoresObjDets = stats.results(i).objDetsScores{cI};
+            dispWindows = stats.results(i).dispWindows{cI};
+            presenceScores = stats.results(i).presenceScores{cI};
+            
+             % Only consider those displaced windows the ones that 
+            windowWeights = repmat(scoresObjDets,numel(presenceScores)...
+                /numel(scoresObjDets),1).*presenceScores;
+            
+            scoreFromDispWindows  = scoreBoxesWithDispWindowsUnsorted(dispWindows, currNetBoxes, windowWeights);
+
+            newScoresNet = (1-nnOpts.CM(cI))*currNetScores + ...
+                nnOpts.CM(cI)*scoreFromDispWindows;
+
+            boxes = currNetBoxes;
+            scores = newScoresNet;
+            
+            % Sort, get detections > thresh and perform NMS
+            [currNetScoresT, sI] = sort(scores, 'descend');
+            currNetBoxesT = boxes(sI,:);
+
+            goodI = currNetScoresT > minDetectionScore;
+            currScoresT = currNetScoresT(goodI, :);
+            currBoxesT= currNetBoxesT(goodI, :);
+
+            [~, goodBoxesI] = BoxNMS(currBoxesT);
+            currBoxes{i} = currBoxesT(goodBoxesI, :);
+            currScores{i} = currScoresT(goodBoxesI);
+            
+        else
+            currBoxes{i} = stats.results(i).boxesPrt{cI+1};
+            currScores{i} = stats.results(i).scoresPrt{cI+1};
+        end
     end
     
     [currBoxes, fileIdx] = Cell2Matrix(gather(currBoxes));
@@ -52,9 +91,9 @@ end
 if isfield(stats.results(1), 'boxesRegressedPrt')
     for cI = 1:105
         %%
-        currBoxes = cell(length(testIms), 1);
-        currScores = cell(length(testIms), 1);
-        for i=1:length(testIms)
+        currBoxes = cell(testCount, 1);
+        currScores = cell(testCount, 1);
+        for i=1:testCount
             % Get regressed boxes and refit them to the image
             currBoxes{i} = stats.results(i).boxesRegressedPrt{cI+1};
             currBoxes{i}(:,1) = max(currBoxes{i}(:,1), 1);
