@@ -35,7 +35,7 @@ for kk = 1:numel(coeffs)
 
         for i=1:testCount
 
-           currNetBoxes = stats.results(i).boxesPrt;
+            currNetBoxes = stats.results(i).boxesPrt{cI+1};
             currNetScores = stats.results(i).scoresPrt{cI+1};
             
             % Assume stats has ON info if nnOpts has coefficients field
