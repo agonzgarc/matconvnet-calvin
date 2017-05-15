@@ -20,11 +20,7 @@ addParameter(p, 'numPrtClasses', '106');
 addParameter(p, 'numOuts','0');
 parse(p, varargin{:});
 
-lastConvPoolName = p.Results.lastConvPoolName;
-firstFCName = p.Results.firstFCName;
-secondFCName =  p.Results.secondFCName;
 finalFCName = p.Results.finalFCName;
-numObjClasses = p.Results.numObjClasses;
 numPrtClasses = p.Results.numPrtClasses;
 numOuts = p.Results.numOuts;
 

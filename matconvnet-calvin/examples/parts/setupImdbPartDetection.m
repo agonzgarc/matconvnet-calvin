@@ -21,7 +21,8 @@ if nargin < 5
     ONparams = [];
 else
     % Consider only images with at least one part when training OffsetNet
-    if ~ONparams.test
+    % or when training coefficients
+    if ~ONparams.test || ONparams.trainCoeffs
         trainIms = imdbTrain.image_ids(unique(imdbTrain.mapping(:,4)));
         testIms = imdbTest.image_ids(unique(imdbTest.mapping(:,4)));
     end

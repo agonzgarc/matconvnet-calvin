@@ -29,10 +29,9 @@ for cI = 1:105
     currBoxes = cell(testCount, 1);
     currScores = cell(testCount, 1);
     for i=1:testCount
-        
-        
+       
         if isfield(nnOpts,'CM')
-            currNetBoxes = stats.results(i).boxesPrt;
+            currNetBoxes = stats.results(i).boxesPrt{cI+1};
             currNetScores = stats.results(i).scoresPrt{cI+1};
             
             % Assume stats has ON info if nnOpts has coefficients field
@@ -94,14 +93,53 @@ if isfield(stats.results(1), 'boxesRegressedPrt')
         currBoxes = cell(testCount, 1);
         currScores = cell(testCount, 1);
         for i=1:testCount
-            % Get regressed boxes and refit them to the image
-            currBoxes{i} = stats.results(i).boxesRegressedPrt{cI+1};
-            currBoxes{i}(:,1) = max(currBoxes{i}(:,1), 1);
-            currBoxes{i}(:,2) = max(currBoxes{i}(:,2), 1);
-            currBoxes{i}(:,3) = min(currBoxes{i}(:,3), imSizes(i,2));
-            currBoxes{i}(:,4) = min(currBoxes{i}(:,4), imSizes(i,1));
+            if isfield(nnOpts,'CM')
+                currNetBoxes = stats.results(i).boxesRegressedPrt{cI+1};
+                currNetBoxes(:,1) = max(currNetBoxes(:,1), 1);
+                currNetBoxes(:,2) = max(currNetBoxes(:,2), 1);
+                currNetBoxes(:,3) = min(currNetBoxes(:,3), imSizes(i,2));
+                currNetBoxes(:,4) = min(currNetBoxes(:,4), imSizes(i,1));
+                currNetScores = stats.results(i).scoresPrt{cI+1};
 
-            currScores{i} = stats.results(i).scoresRegressedPrt{cI+1};
+                % Assume stats has ON info if nnOpts has coefficients field
+                scoresObjDets = stats.results(i).objDetsScores{cI};
+                dispWindows = stats.results(i).dispWindows{cI};
+                presenceScores = stats.results(i).presenceScores{cI};
+
+                 % Only consider those displaced windows the ones that 
+                windowWeights = repmat(scoresObjDets,numel(presenceScores)...
+                    /numel(scoresObjDets),1).*presenceScores;
+
+                scoreFromDispWindows  = scoreBoxesWithDispWindowsUnsorted(dispWindows, currNetBoxes, windowWeights);
+
+                newScoresNet = (1-nnOpts.CM(cI))*currNetScores + ...
+                    nnOpts.CM(cI)*scoreFromDispWindows;
+
+                boxes = currNetBoxes;
+                scores = newScoresNet;
+
+                % Sort, get detections > thresh and perform NMS
+                [currNetScoresT, sI] = sort(scores, 'descend');
+                currNetBoxesT = boxes(sI,:);
+
+                goodI = currNetScoresT > minDetectionScore;
+                currScoresT = currNetScoresT(goodI, :);
+                currBoxesT= currNetBoxesT(goodI, :);
+
+                [~, goodBoxesI] = BoxNMS(currBoxesT);
+                currBoxes{i} = currBoxesT(goodBoxesI, :);
+                currScores{i} = currScoresT(goodBoxesI);
+
+            else
+                % Get regressed boxes and refit them to the image
+                currBoxes{i} = stats.results(i).boxesRegressedPrt{cI+1};
+                currBoxes{i}(:,1) = max(currBoxes{i}(:,1), 1);
+                currBoxes{i}(:,2) = max(currBoxes{i}(:,2), 1);
+                currBoxes{i}(:,3) = min(currBoxes{i}(:,3), imSizes(i,2));
+                currBoxes{i}(:,4) = min(currBoxes{i}(:,4), imSizes(i,1));
+
+                currScores{i} = stats.results(i).scoresRegressedPrt{cI+1};
+            end
         end
 
         [currBoxes, fileIdx] = Cell2Matrix(gather(currBoxes));

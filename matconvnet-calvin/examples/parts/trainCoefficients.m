@@ -9,7 +9,7 @@ trash = load(sprintf(DATAopts.imdb, testName));
 imdbTest = trash.imdb;
 clear trash;
 % Use images with at least one part
-testIms = imdbTest.image_ids(unique(imdbTest.mapping(:,4)));
+testIms = imdbTest.image_ids;(unique(imdbTest.mapping(:,4)));
 
 % get image sizes
 testCount = length(testIms);
@@ -49,8 +49,8 @@ for kk = 1:numel(coeffs)
             
             scoreFromDispWindows  = scoreBoxesWithDispWindowsUnsorted(dispWindows, currNetBoxes, windowWeights);
 
-            newScoresNet = (1-coeffs(cI))*currNetScores + ...
-                coeffs(cI)*scoreFromDispWindows;
+            newScoresNet = (1-coeffs(kk))*currNetScores + ...
+                coeffs(kk)*scoreFromDispWindows;
 
             boxes = currNetBoxes;
             scores = newScoresNet;

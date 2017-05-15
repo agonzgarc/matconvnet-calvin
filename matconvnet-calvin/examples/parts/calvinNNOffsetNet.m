@@ -91,11 +91,8 @@ calvinn.convertNetworkToOffsetNet('numObjClasses',imdb.numClassesObj,...
     'numPrtClasses',imdb.numClassesPrt,'numOuts',numOuts);
 
 
-t1 = tic();
 %%% Train
 calvinn.train();
-times(3,1) = toc(t1);
-
 
 
 %%% Test
@@ -108,19 +105,16 @@ netObjAppCls = netObjAppCls.net;
 % Setup again imdb --> for testing we need all images (without parts too)
 ONparams.test = 1;
 [imdb, idxPartGlobal2idxClass] = setupImdbPartDetection(@ImdbOffsetNet, trainName, testName, net, ONparams);
-
-
+ 
 nnOpts.misc.numOuts = numOuts;
 nnOpts.misc.idxPartGlobal2idxClass = idxPartGlobal2idxClass(2:end);
 
-calvinnObjAppCls = CalvinNN(netObjAppCls, imdb, nnOpts);
-
-calvinnObjAppCls.mergeObjAppClswOffsetNet('offsetNet', calvinn.net, 'numOuts', max(numOuts));
-t2 = tic;
-stats = calvinnObjAppCls.test;
-times(3,2) = toc(t2);
-
-save([nnOpts.expDir 'stats.mat'], 'stats','-v7.3');
+% calvinnObjAppCls = CalvinNN(netObjAppCls, imdb, nnOpts);
+% 
+% calvinnObjAppCls.mergeObjAppClswOffsetNet('offsetNet', calvinn.net, 'numOuts', max(numOuts));
+% stats = calvinnObjAppCls.test;
+% 
+% save([nnOpts.expDir '/stats.mat'], 'stats','-v7.3');
 
 
 %%% Train coefficients if necessary

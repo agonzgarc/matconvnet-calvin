@@ -65,13 +65,8 @@ classdef ImdbOffsetNet < ImdbMatbox
                 batchData{idx} = 'presenceTargets';   idx = idx + 1;
                 batchData{idx} = reshape(presenceTargets', 1,1,size(presenceTargets,2), size(presenceTargets,1));     idx = idx + 1;    
                 batchData{idx} = 'oriImSize';   idx = idx + 1;
-                batchData{idx} = oriImSize;     idx = idx + 1;
-                
-%                 batchData{idx} = 'instanceWeights';     idx = idx + 1;
-%                 batchData{idx} = [];       %idx = idx + 1;
-%                
-               
-                
+                batchData{idx} = oriImSize;    
+
             else
                % Test set. Get all boxes
                 [boxesPrt, keysPrt] = obj.SampleAllBoxesFromGstructPrt(gStruct);

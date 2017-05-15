@@ -9,15 +9,11 @@ function setup()
 % Define paths
 root = fileparts(mfilename('fullpath'));
 matconvnetFolder = fullfile(root, 'matconvnet', 'matlab');
-matconvnetFcnFolder = fullfile(root, 'matconvnet-fcn');
 matconvnetCalvinFolder = fullfile(root, 'matconvnet-calvin');
 
 % Add matconvnet
 addpath(matconvnetFolder);
 vl_setupnn();
-
-% Add matconvnet-fcn
-addpath(matconvnetFcnFolder);
 
 % Add matconvnet-calvin
 addpath(genpath(matconvnetCalvinFolder));
