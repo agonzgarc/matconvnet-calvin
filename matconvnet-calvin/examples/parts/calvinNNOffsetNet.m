@@ -128,10 +128,11 @@ if trainCoeffs
     statsTr = calvinnObjAppCls.test;
     
     CM = trainCoefficients('train',statsTr);
-    
+    save([nnOpts.expDir '/coeffs.mat'],'CM');
+
 else
     % Load coefficients
-    trash = load([nnOpts.expDir 'coeffs.mat']);
+    trash = load([nnOpts.expDir '/coeffs.mat']);
     CM = trash.CM;
     clear trash;
 end

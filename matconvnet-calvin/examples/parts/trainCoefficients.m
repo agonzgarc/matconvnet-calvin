@@ -9,7 +9,7 @@ trash = load(sprintf(DATAopts.imdb, testName));
 imdbTest = trash.imdb;
 clear trash;
 % Use images with at least one part
-testIms = imdbTest.image_ids;(unique(imdbTest.mapping(:,4)));
+testIms = imdbTest.image_ids(unique(imdbTest.mapping(:,4)));
 
 % get image sizes
 testCount = length(testIms);
