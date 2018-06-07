@@ -52,7 +52,7 @@ Finally, it trains Offset Net and merges it with the model that contains the obj
  
 
 ## References
-- \[1\] **Objects as Context for Part Detection** by Gonzalez-Garcia et al., arXiv 2017, http://arxiv.org/abs/1703.09529 
+- \[1\] **Objects as Context for Part Detection** by Gonzalez-Garcia et al., CVPR 2018, http://arxiv.org/abs/1703.09529 
 - \[2\] **Fast R-CNN (FRCN)** by Girshick et al., ICCV 2015, http://arxiv.org/abs/1504.08083
 
 ## Disclaimer
